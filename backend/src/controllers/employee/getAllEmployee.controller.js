@@ -1,6 +1,6 @@
 import { Employee } from "../../models/employee.model.js";
-import { asyncHandler } from "../../utils/asyncHandler";
-import { ApiResponse } from "../../utils/apiResponse";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { ApiResponse } from "../../utils/apiResponse.js";
 
 export const getAllEmployees = asyncHandler(async (req, res) => {
   const { search, department, jobTitle, page = 1, limit = 10 } = req.query;

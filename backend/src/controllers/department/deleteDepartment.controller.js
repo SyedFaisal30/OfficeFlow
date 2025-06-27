@@ -1,7 +1,7 @@
-import { Department } from "../../models/department.model";
-import { asyncHandler } from "../../utils/Asynchandler";
-import { ApiError } from "../../utils/ApiError";   
-import { ApiResponse } from "../../utils/ApiResponse";
+import { Department } from "../../models/department.model.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { ApiError } from "../../utils/apiError.js";   
+import { ApiResponse } from "../../utils/apiResponse.js";
 
 export const deleteDepartment = asyncHandler(async (req, res) => {
 

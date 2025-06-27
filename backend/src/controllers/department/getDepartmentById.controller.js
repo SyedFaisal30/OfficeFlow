@@ -1,7 +1,7 @@
-import { Department } from "../../models/department.model";
-import { asyncHandler } from "../../utils/Asynchandler";
-import { ApiResponse } from "../../utils/ApiResponse";
-import { ApiError } from "../../utils/ApiError";
+import { Department } from "../../models/department.model.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { ApiResponse } from "../../utils/apiResponse.js";
+import { ApiError } from "../../utils/apiError.js";
 
 export const getDepartmentById = asyncHandler(async (req, res) => {
     const dept = await Department.findById(req.params.id);
