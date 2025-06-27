@@ -2,7 +2,7 @@ import mongoose, {Schema} from "mongoose";
 
 const departmentSchema = new Schema(
     {
-        nam: {
+        name: {
             type: String,
             required: true,
             unique: true,
