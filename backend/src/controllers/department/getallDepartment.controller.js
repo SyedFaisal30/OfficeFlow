@@ -1,6 +1,6 @@
-import { Department } from "../models/department.model";
-import { asyncHandler } from "../utils/Asynchandler";
-import { ApiResponse } from "../utils/ApiResponse";
+import { Department } from "../../models/department.model";
+import { asyncHandler } from "../../utils/Asynchandler";
+import { ApiResponse } from "../../utils/ApiResponse";
 
 export const getAllDepartments = asyncHandler(async (req, res) => {
     const departments = await Department.find();

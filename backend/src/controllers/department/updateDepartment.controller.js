@@ -1,7 +1,7 @@
-import { Department } from "../models/department.model.js";
-import { asyncHandler } from "../utils/Asynchandler.js";
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
+import { Department } from "../../models/department.model.js";
+import { asyncHandler } from "../../utils/Asynchandler.js";
+import { ApiError } from "../../utils/ApiError.js";
+import { ApiResponse } from "../../utils/ApiResponse.js";
 
 export const updateDepartment = asyncHandler(async (req, res) => {
     const { name, description } = req.body;
