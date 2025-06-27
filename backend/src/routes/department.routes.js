@@ -7,14 +7,14 @@ import { updateDepartment } from "../controllers/department/updateDepartment.con
 
 const departmentRouter = Router(); 
 
-    router.route("/createdepartment").post(createDepartment);
+    departmentRouter.route("/createdepartment").post(createDepartment);
 
-    router.route("/getalldepartments").get(getAllDepartments);
+    departmentRouter.route("/getalldepartments").get(getAllDepartments);
 
-    router.route("/getdepartmentbyid/:id").get(getDepartmentById);
+    departmentRouter.route("/getdepartmentbyid/:id").get(getDepartmentById);
     
-    router.route("/updatedepartment/:id").put(updateDepartment);
+    departmentRouter.route("/updatedepartment/:id").put(updateDepartment);
     
-    router.route("/deletedepartment/:id").delete(deleteDepartment);
+    departmentRouter.route("/deletedepartment/:id").delete(deleteDepartment);
     
 export default departmentRouter
