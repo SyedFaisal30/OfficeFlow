@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { adminLogin } from "../controllers/adminlogin.controller.js";
+import { adminLogin, refreshAccessToken } from "../controllers/admin/adminlogin.controller.js";
 
 const adminRouter = Router();
 
 adminRouter.route("/login").post(adminLogin);
+
+adminRouter.post("/refresh-token", refreshAccessToken);
 
 export default adminRouter;

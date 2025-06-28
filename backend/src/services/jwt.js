@@ -12,6 +12,6 @@ export const generateRefreshToken = (adminId) => {
   return jwt.sign(
     { adminId },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "1d" }
   );
 };
