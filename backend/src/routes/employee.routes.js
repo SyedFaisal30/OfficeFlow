@@ -4,17 +4,18 @@ import { getAllEmployees } from "../controllers/employee/getAllEmployee.controll
 import { getEmployeeById } from "../controllers/employee/getEmployeeById.controller.js";
 import { updateEmployee } from "../controllers/employee/updateEmployee.controller.js";
 import { deleteEmployee } from "../controllers/employee/deleteEmployee.controller.js";
+import { verifyJwt } from "../middlewares/verifyjwt.middlewares.js";
 
 const employeeRouter = Router();
 
-    employeeRouter.route("/createemployee").post(createEmployee);
+    employeeRouter.route("/createemployee").post(verifyJwt, createEmployee);
 
-    employeeRouter.route("/getallemployees").get(getAllEmployees);
+    employeeRouter.route("/getallemployees").get(verifyJwt, getAllEmployees);
 
-    employeeRouter.route("/getemployeebyid/:id").get(getEmployeeById);
+    employeeRouter.route("/getemployeebyid/:id").get(verifyJwt, getEmployeeById);
     
-    employeeRouter.route("/updateemployee/:id").put(updateEmployee);
+    employeeRouter.route("/updateemployee/:id").put(verifyJwt, updateEmployee);
     
-    employeeRouter.route("/deleteemployee/:id").delete(deleteEmployee);
+    employeeRouter.route("/deleteemployee/:id").delete(verifyJwt, deleteEmployee);
     
 export default employeeRouter
