@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { adminLogin } from "../controllers/adminlogin.conytroller.js";
-import { verifyJwt } from "../middlewares/verifyjwt.middlewares.js";
+import { adminLogin } from "../controllers/adminlogin.controller.js";
 
 const adminRouter = Router();
 
-adminRouter.route("/login").post(verifyJwt, adminLogin);
+adminRouter.route("/login").post(adminLogin);
 
 export default adminRouter;
