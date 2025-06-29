@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import DepartmentsPage from "./Department";
+import EmployeesPage from "./Employee"; // 👈 import Employee page component
+
 const Dashboard = () => {
   const [stats, setStats] = useState({ departments: 0, employees: 0 });
   const [error, setError] = useState("");
@@ -10,8 +12,12 @@ const Dashboard = () => {
     const fetchStats = async () => {
       try {
         const [deptRes, empRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_SERVER_URL}/api/department/getalldepartments`, { withCredentials: true }),
-          axios.get(`${import.meta.env.VITE_SERVER_URL}/api/employee/getallemployees`, { withCredentials: true })
+          axios.get(`${import.meta.env.VITE_SERVER_URL}/api/department/getalldepartments`, {
+            withCredentials: true,
+          }),
+          axios.get(`${import.meta.env.VITE_SERVER_URL}/api/employee/getallemployees`, {
+            withCredentials: true,
+          }),
         ]);
 
         setStats({
@@ -45,10 +51,16 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* 👇 Embed the DepartmentsPage directly */}
+      {/* 👇 Departments Section */}
       <div>
         <h2 className="text-2xl font-semibold mt-8 mb-4 text-blue-700">Manage Departments</h2>
         <DepartmentsPage />
+      </div>
+
+      {/* 👇 Employees Section */}
+      <div>
+        <h2 className="text-2xl font-semibold mt-12 mb-4 text-blue-700">Manage Employees</h2>
+        <EmployeesPage />
       </div>
     </div>
   );

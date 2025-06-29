@@ -16,8 +16,8 @@ export const createEmployee = asyncHandler(async (req, res) => {
     const existingEmployee = await Employee.findOne({ email });
     if (existingEmployee) {
         return res
-            .status(400)
-            .json(new ApiError(400, false, "Employee already exists"));
+            .status(409)
+            .json(new ApiError(409, false, "Employee already exists"));
     }
 
     const Dept = await Department.findById(department);
