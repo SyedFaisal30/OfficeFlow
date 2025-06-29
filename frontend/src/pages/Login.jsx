@@ -3,7 +3,6 @@ import axios from "axios";
 import { FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +16,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        `${SERVER_URL}/api/admin/login`,
+        `${import.meta.env.VITE_SERVER_URL}/api/admin/login`,
         { email, password },
         { withCredentials: true }
       );
