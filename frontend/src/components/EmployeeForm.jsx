@@ -20,7 +20,6 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
 
   const isEditMode = !!editData;
 
-  // Prefill form if in edit mode
   useEffect(() => {
     if (isEditMode) {
       setName(editData.name || "");
@@ -34,7 +33,6 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
     }
   }, [editData, isEditMode]);
 
-  // Fetch departments and supervisors
   useEffect(() => {
     axios
       .get(
@@ -63,7 +61,6 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
       });
   }, [editData, isEditMode]);
 
-  // External API (CountriesNow)
   useEffect(() => {
     axios
       .get("https://countriesnow.space/api/v0.1/countries/positions")
@@ -111,15 +108,13 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
       email,
       jobTitle,
       department,
-      supervisor: null,
+      supervisor: supervisor || null,
       location: {
         country,
         state,
         city: cleanCity,
       },
     };
-
-    console.log("📦 Payload being sent:", payload); // 👈 Added this line
 
     try {
       if (isEditMode) {

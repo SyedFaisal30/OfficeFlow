@@ -3,7 +3,6 @@ import axios from "axios";
 import { FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,6 +21,8 @@ const Login = () => {
       );
 
       if (res?.data?.status === 200) {
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("login-event", Date.now());
         navigate("/dashboard");
       }
     } catch (error) {
@@ -34,7 +35,9 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-white px-4">
       <div className="max-w-md w-full bg-white shadow-xl rounded-xl p-8">
-        <h2 className="text-3xl font-bold text-blue-700 text-center mb-6">Admin Login</h2>
+        <h2 className="text-3xl font-bold text-blue-700 text-center mb-6">
+          Admin Login
+        </h2>
 
         {errorMsg && (
           <p className="text-red-600 text-center mb-4">{errorMsg}</p>
@@ -42,7 +45,9 @@ const Login = () => {
 
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Email</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Email
+            </label>
             <div className="flex items-center border rounded-md px-3 py-2">
               <FaEnvelope className="text-gray-500 mr-2" />
               <input
@@ -57,7 +62,9 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Password</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Password
+            </label>
             <div className="flex items-center border rounded-md px-3 py-2">
               <FaLock className="text-gray-500 mr-2" />
               <input

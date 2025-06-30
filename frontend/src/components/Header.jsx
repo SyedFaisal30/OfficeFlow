@@ -1,25 +1,52 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FaBuilding, FaUserTie, FaUsers, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaBuilding,
+  FaUserTie,
+  FaUsers,
+  FaSignInAlt,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import { useEffect, useState } from "react";
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("isLoggedIn") === "true"
+  );
 
+  // Sync login/logout state across routes and tabs
   useEffect(() => {
-    // Basic check: is accessToken cookie present?
-    const isAuth = document.cookie.includes("accessToken=");
-    setIsLoggedIn(isAuth);
+    const updateLoginState = () => {
+      const isAuth = localStorage.getItem("isLoggedIn") === "true";
+      setIsLoggedIn(isAuth);
+    };
+
+    updateLoginState();
+
+    const onStorageChange = () => updateLoginState();
+
+    window.addEventListener("storage", onStorageChange);
+    return () => {
+      window.removeEventListener("storage", onStorageChange);
+    };
   }, [location]);
 
-  const handleLogout = () => {
-    // Clear cookies
-    document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    localStorage.clear();
-    setIsLoggedIn(false);
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_SERVER_URL}/api/admin/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      localStorage.removeItem("isLoggedIn");
+      localStorage.setItem("logout-event", Date.now()); 
+      setIsLoggedIn(false);
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed", err);
+      alert("Logout failed. Try again.");
+    }
   };
 
   return (
@@ -33,15 +60,15 @@ const Header = () => {
       </h1>
 
       <nav className="space-x-4 flex items-center">
-        {isLoggedIn && (
+        {isLoggedIn ? (
           <>
             <Link to="/dashboard" className="hover:underline flex items-center gap-1">
               <FaUserTie /> Dashboard
             </Link>
-            <Link to="/departments" className="hover:underline flex items-center gap-1">
+            <Link to="/dashboard/departments" className="hover:underline flex items-center gap-1">
               <FaBuilding /> Departments
             </Link>
-            <Link to="/employees" className="hover:underline flex items-center gap-1">
+            <Link to="/dashboard/employees" className="hover:underline flex items-center gap-1">
               <FaUsers /> Employees
             </Link>
             <button
@@ -52,9 +79,7 @@ const Header = () => {
               Logout
             </button>
           </>
-        )}
-
-        {!isLoggedIn && (
+        ) : (
           <Link
             to="/login"
             className="bg-green-500 px-3 py-1 rounded hover:bg-green-600 flex items-center gap-1"
