@@ -8,7 +8,7 @@ import adminRouter from './routes/admin.routes.js';
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://123lms00-5173.inc1.devtunnels.ms/"],
     credentials: true
 }));
 

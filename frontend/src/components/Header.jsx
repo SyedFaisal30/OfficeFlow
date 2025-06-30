@@ -15,7 +15,6 @@ const Header = () => {
     localStorage.getItem("isLoggedIn") === "true"
   );
 
-  // Sync login/logout state across routes and tabs
   useEffect(() => {
     const updateLoginState = () => {
       const isAuth = localStorage.getItem("isLoggedIn") === "true";
@@ -23,13 +22,9 @@ const Header = () => {
     };
 
     updateLoginState();
-
     const onStorageChange = () => updateLoginState();
-
     window.addEventListener("storage", onStorageChange);
-    return () => {
-      window.removeEventListener("storage", onStorageChange);
-    };
+    return () => window.removeEventListener("storage", onStorageChange);
   }, [location]);
 
   const handleLogout = async () => {
@@ -38,9 +33,8 @@ const Header = () => {
         method: "POST",
         credentials: "include",
       });
-
       localStorage.removeItem("isLoggedIn");
-      localStorage.setItem("logout-event", Date.now()); 
+      localStorage.setItem("logout-event", Date.now());
       setIsLoggedIn(false);
       navigate("/login");
     } catch (err) {
@@ -50,42 +44,54 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-blue-600 text-white shadow-md px-6 py-4 flex justify-between items-center">
+    <header className="bg-blue-600 w-full text-white shadow-md px-4 py-3 flex justify-between items-center">
       <h1
-        className="text-2xl font-bold flex items-center gap-2 cursor-pointer"
+        className="text-xl sm:text-2xl font-bold flex items-center gap-2 cursor-pointer"
         onClick={() => navigate("/")}
       >
-        <FaBuilding className="text-white" />
+        <FaBuilding />
         OfficeFlow
       </h1>
 
-      <nav className="space-x-4 flex items-center">
+      <nav className="space-x-4 flex items-center text-sm">
         {isLoggedIn ? (
           <>
-            <Link to="/dashboard" className="hover:underline flex items-center gap-1">
-              <FaUserTie /> Dashboard
+            <Link
+              to="/dashboard"
+              className="hover:underline flex items-center gap-1"
+            >
+              <FaUserTie />
+              <span className="hidden sm:block">Dashboard</span>
             </Link>
-            <Link to="/dashboard/departments" className="hover:underline flex items-center gap-1">
-              <FaBuilding /> Departments
+            <Link
+              to="/dashboard/departments"
+              className="hover:underline flex items-center gap-1"
+            >
+              <FaBuilding />
+              <span className="hidden sm:block">Departments</span>
             </Link>
-            <Link to="/dashboard/employees" className="hover:underline flex items-center gap-1">
-              <FaUsers /> Employees
+            <Link
+              to="/dashboard/employees"
+              className="hover:underline flex items-center gap-1"
+            >
+              <FaUsers />
+              <span className="hidden sm:block">Employees</span>
             </Link>
             <button
               onClick={handleLogout}
-              className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 flex items-center gap-1 cursor-pointer"
+              className="bg-red-500 px-2 py-1 rounded hover:bg-red-600 flex items-center gap-1 cursor-pointer"
             >
               <FaSignOutAlt />
-              Logout
+              <span className="hidden sm:block">Logout</span>
             </button>
           </>
         ) : (
           <Link
             to="/login"
-            className="bg-green-500 px-3 py-1 rounded hover:bg-green-600 flex items-center gap-1 cursor-pointer"
+            className="bg-green-500 px-2 py-1 rounded hover:bg-green-600 flex items-center gap-1 cursor-pointer"
           >
             <FaSignInAlt />
-            Login
+            <span className="hidden sm:block">Login</span>
           </Link>
         )}
       </nav>

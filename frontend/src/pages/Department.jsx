@@ -29,13 +29,13 @@ const DepartmentsPage = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="py-6">
       {mode === "list" ? (
         <>
-          <div className="flex justify-between mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
             <h1 className="text-2xl font-bold text-blue-700">Departments</h1>
             <button
-              className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 w-full sm:w-auto"
               onClick={handleAddClick}
             >
               + Add Department

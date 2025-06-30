@@ -29,13 +29,13 @@ const EmployeePage = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="w-full">
       {mode === "list" ? (
         <>
-          <div className="flex justify-between mb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
             <h1 className="text-2xl font-bold text-blue-700">Employees</h1>
             <button
-              className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition w-full sm:w-auto cursor-pointer"
               onClick={handleAddClick}
             >
               + Add Employee

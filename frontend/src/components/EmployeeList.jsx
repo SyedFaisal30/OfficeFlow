@@ -70,7 +70,7 @@ const EmployeeList = ({ onEdit, refresh }) => {
   }, [fetchEmployees, refresh]);
 
   return (
-    <div className="p-6 bg-white shadow rounded-xl relative">
+    <div className="py-4 px-2 bg-white shadow rounded-xl w-full mx-auto">
       <div className="flex flex-wrap gap-4 mb-4">
         <input
           placeholder="Search by name/email"
@@ -83,9 +83,7 @@ const EmployeeList = ({ onEdit, refresh }) => {
           onChange={(e) => setDepartment(e.target.value)}
           className="border p-2 rounded w-full sm:w-[30%] cursor-pointer"
         >
-          <option className="cursor-pointer" value="">
-            All Departments
-          </option>
+          <option value="">All Departments</option>
           {departments.map((dept) => (
             <option key={dept._id} value={dept._id}>
               {dept.name}
@@ -100,7 +98,7 @@ const EmployeeList = ({ onEdit, refresh }) => {
         />
         <button
           onClick={fetchEmployees}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition cursor-pointer"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition cursor-pointer w-full sm:w-auto"
         >
           Filter
         </button>
@@ -114,57 +112,59 @@ const EmployeeList = ({ onEdit, refresh }) => {
       ) : employees.length === 0 ? (
         <p className="text-center text-gray-500">No employees found.</p>
       ) : (
-        <table className="w-full border mt-4">
-          <thead>
-            <tr className="bg-blue-100 text-left">
-              <th className="p-2">Name</th>
-              <th className="p-2">Email</th>
-              <th className="p-2">Department</th>
-              <th className="p-2">Job Title</th>
-              <th className="p-2">Supervisor</th>
-              <th className="p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {employees.map((emp) => (
-              <tr key={emp._id} className="border-t hover:bg-gray-50">
-                <td className="p-2">{emp.name}</td>
-                <td className="p-2">{emp.email}</td>
-                <td className="p-2">{emp.department?.name || "-"}</td>
-                <td className="p-2">{emp.jobTitle || "-"}</td>
-                <td className="p-2">{emp.supervisor?.name || "-"}</td>
-                <td className="p-2 flex items-center gap-3">
-                  <button
-                    onClick={() => onEdit(emp)}
-                    className="text-blue-600 hover:text-blue-800 cursor-pointer"
-                    title="Edit"
-                  >
-                    <FaEdit className="text-lg" />
-                  </button>
-                  <button
-                    onClick={() => setConfirmDeleteId(emp._id)}
-                    className="text-red-600 hover:text-red-800 cursor-pointer"
-                    title="Delete"
-                  >
-                    <FaTrash className="text-lg" />
-                  </button>
-                </td>
+        <div className="overflow-x-auto justify-center">
+          <table className="min-w-full justify-center border mt-4 text-sm sm:text-base">
+            <thead>
+              <tr className="bg-blue-100 text-left">
+                <th className="p-2">Name</th>
+                <th className="p-2">Email</th>
+                <th className="p-2">Department</th>
+                <th className="p-2">Job Title</th>
+                <th className="p-2">Supervisor</th>
+                <th className="p-2">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {employees.map((emp) => (
+                <tr key={emp._id} className="border-t hover:bg-gray-50">
+                  <td className="p-2">{emp.name}</td>
+                  <td className="p-2">{emp.email}</td>
+                  <td className="p-2">{emp.department?.name || "-"}</td>
+                  <td className="p-2">{emp.jobTitle || "-"}</td>
+                  <td className="p-2">{emp.supervisor?.name || "-"}</td>
+                  <td className="p-2 flex items-center gap-3">
+                    <button
+                      onClick={() => onEdit(emp)}
+                      className="text-blue-600 hover:text-blue-800"
+                      title="Edit"
+                    >
+                      <FaEdit className="text-lg" />
+                    </button>
+                    <button
+                      onClick={() => setConfirmDeleteId(emp._id)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Delete"
+                    >
+                      <FaTrash className="text-lg" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <Modal
         isOpen={!!confirmDeleteId}
         onClose={() => setConfirmDeleteId(null)}
       >
-        <div className="text-center">
-          <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
+        <div className="text-center p-4 sm:p-6">
+          <h3 className="text-lg font-semibold mb-3">Confirm Delete</h3>
           <p className="mb-6 text-gray-600">
             Are you sure you want to delete this employee?
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button
               onClick={handleDelete}
               className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
@@ -173,7 +173,7 @@ const EmployeeList = ({ onEdit, refresh }) => {
             </button>
             <button
               onClick={() => setConfirmDeleteId(null)}
-              className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+              className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
             >
               Cancel
             </button>

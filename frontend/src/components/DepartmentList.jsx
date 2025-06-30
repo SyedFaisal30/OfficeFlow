@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import DepartmentForm from "./DepartmentForm";
 import Modal from "./Modal";
 
@@ -9,10 +9,8 @@ const DepartmentList = () => {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState(null);
-
   const [confirmId, setConfirmId] = useState(null);
 
   const fetchDepartments = async () => {
@@ -51,7 +49,11 @@ const DepartmentList = () => {
   };
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-xl relative">
+    <div className="py-4 px-2 sm:p-1 bg-white shadow-md rounded-xl w-[100%] ">
+      <h2 className="text-xl sm:text-2xl font-bold text-blue-700 mb-4">
+        Department List
+      </h2>
+
       {loading ? (
         <p className="text-gray-600">Loading...</p>
       ) : error ? (
@@ -59,42 +61,44 @@ const DepartmentList = () => {
       ) : departments.length === 0 ? (
         <p className="text-gray-600">No departments found.</p>
       ) : (
-        <table className="w-full table-auto border rounded-lg">
-          <thead>
-            <tr className="bg-blue-100 text-left">
-              <th className="p-2">Name</th>
-              <th className="p-2">Description</th>
-              <th className="p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {departments.map((dept) => (
-              <tr key={dept._id} className="border-t hover:bg-gray-50">
-                <td className="p-2">{dept.name}</td>
-                <td className="p-2">{dept.description || "-"}</td>
-                <td className="p-2 space-x-3">
-                  <button
-                    className="text-blue-600 hover:text-blue-800 cursor-pointer"
-                    onClick={() => {
-                      setEditData(dept);
-                      setShowForm(true);
-                    }}
-                    title="Edit"
-                  >
-                    <FaEdit />
-                  </button>
-                  <button
-                    className="text-red-600 hover:text-red-800 cursor-pointer"
-                    onClick={() => setConfirmId(dept._id)}
-                    title="Delete"
-                  >
-                    <FaTrash />
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-[95%] justify-center mx-auto border rounded-lg text-sm sm:text-base">
+            <thead>
+              <tr className="bg-blue-100 text-left">
+                <th className="p-3 whitespace-nowrap">Name</th>
+                <th className="p-3 whitespace-nowrap">Description</th>
+                <th className="p-3 whitespace-nowrap">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {departments.map((dept) => (
+                <tr key={dept._id} className="border-t hover:bg-gray-50">
+                  <td className="p-3">{dept.name}</td>
+                  <td className="p-3">{dept.description || "-"}</td>
+                  <td className="p-3 flex flex-wrap gap-2">
+                    <button
+                      className="text-blue-600 hover:text-blue-800"
+                      onClick={() => {
+                        setEditData(dept);
+                        setShowForm(true);
+                      }}
+                      title="Edit"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      className="text-red-600 hover:text-red-800"
+                      onClick={() => setConfirmId(dept._id)}
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <Modal isOpen={showForm} onClose={() => setShowForm(false)}>
@@ -106,20 +110,20 @@ const DepartmentList = () => {
       </Modal>
 
       <Modal isOpen={!!confirmId} onClose={() => setConfirmId(null)}>
-        <div className="text-center">
-          <h3 className="text-lg font-semibold mb-4">Confirm Deletion</h3>
+        <div className="text-center p-4">
+          <h3 className="text-lg font-semibold mb-3">Confirm Deletion</h3>
           <p className="mb-6 text-gray-600">
             Are you sure you want to delete this department?
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button
-              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 cursor-pointer"
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
               onClick={() => handleDelete(confirmId)}
             >
               Yes, Delete
             </button>
             <button
-              className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 cursor-pointer"
+              className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
               onClick={() => setConfirmId(null)}
             >
               Cancel

@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { FaUser, FaEnvelope, FaBriefcase } from "react-icons/fa";
+import {
+  FaUser,
+  FaEnvelope,
+  FaBriefcase,
+  FaBuilding,
+  FaUserTie,
+  FaGlobe,
+  FaFlag,
+  FaCity,
+} from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 
 const EmployeeForm = ({ onClose, onSuccess, editData }) => {
@@ -37,28 +46,16 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
 
   useEffect(() => {
     axios
-      .get(
-        `${import.meta.env.VITE_SERVER_URL}/api/department/getalldepartments`,
-        {
-          withCredentials: true,
-        }
-      )
+      .get(`${import.meta.env.VITE_SERVER_URL}/api/department/getalldepartments`, { withCredentials: true })
       .then((res) => setDepartments(res.data?.data || []));
 
     axios
-      .get(`${import.meta.env.VITE_SERVER_URL}/api/employee/getallemployees`, {
-        withCredentials: true,
-      })
+      .get(`${import.meta.env.VITE_SERVER_URL}/api/employee/getallemployees`, { withCredentials: true })
       .then((res) => {
         let allEmployees = res.data?.data?.employees || [];
-
-        if (isEditMode && editData) {
-          const alreadyIncluded = allEmployees.some(
-            (emp) => emp._id === editData._id
-          );
-          if (!alreadyIncluded) allEmployees.push(editData);
+        if (isEditMode && editData && !allEmployees.some((e) => e._id === editData._id)) {
+          allEmployees.push(editData);
         }
-
         setSupervisors(allEmployees);
       });
   }, [editData, isEditMode]);
@@ -74,12 +71,7 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
     setState("");
     setCity("");
     try {
-      const res = await axios.post(
-        "https://countriesnow.space/api/v0.1/countries/states",
-        {
-          country: value,
-        }
-      );
+      const res = await axios.post("https://countriesnow.space/api/v0.1/countries/states", { country: value });
       setStates(res.data?.data?.states || []);
     } catch {
       setStates([]);
@@ -90,13 +82,10 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
     setState(value);
     setCity("");
     try {
-      const res = await axios.post(
-        "https://countriesnow.space/api/v0.1/countries/state/cities",
-        {
-          country,
-          state: value,
-        }
-      );
+      const res = await axios.post("https://countriesnow.space/api/v0.1/countries/state/cities", {
+        country,
+        state: value,
+      });
       setCities(res.data?.data || []);
     } catch {
       setCities([]);
@@ -110,7 +99,6 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
       return;
     }
 
-    const cleanCity = city.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     const payload = {
       name,
       email,
@@ -120,16 +108,14 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
       location: {
         country,
         state,
-        city: cleanCity,
+        city: city.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
       },
     };
 
     try {
       if (isEditMode) {
         await axios.put(
-          `${import.meta.env.VITE_SERVER_URL}/api/employee/updateemployee/${
-            editData._id
-          }`,
+          `${import.meta.env.VITE_SERVER_URL}/api/employee/updateemployee/${editData._id}`,
           payload,
           { withCredentials: true }
         );
@@ -149,13 +135,9 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
       }, 300);
     } catch (err) {
       if (err?.response?.status === 409) {
-        toast.error("Email already exists. Use a different one.", {
-          autoClose: false,
-        });
+        toast.error("Email already exists. Use a different one.", { autoClose: false });
       } else {
-        toast.error("Failed to save employee. Try again.", {
-          autoClose: false,
-        });
+        toast.error("Failed to save employee. Try again.", { autoClose: false });
       }
     }
   };
@@ -163,13 +145,10 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-blue-700 text-center flex items-center justify-center gap-2">
-        {isEditMode ? "✏️ Edit Employee" : "➕ Add New Employee"}
+        {isEditMode ? <FaEdit /> : <FaUser />} {isEditMode ? "Edit Employee" : "Add New Employee"}
       </h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex items-center gap-2 border p-2 rounded-md">
           <FaUser />
           <input
@@ -203,69 +182,82 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
           />
         </div>
 
-        <select
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-          className="border p-2 rounded-md cursor-pointer"
-          required
-        >
-          <option value="">🏢 Select Department *</option>
-          {departments.map((dept) => (
-            <option key={dept._id} value={dept._id}>
-              {dept.name}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2 border p-2 rounded-md">
+          <FaBuilding />
+          <select
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+            className="w-full outline-none cursor-pointer"
+            required
+          >
+            <option value="">Select Department *</option>
+            {departments.map((dept) => (
+              <option key={dept._id} value={dept._id}>
+                {dept.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          value={supervisor || ""}
-          onChange={(e) =>
-            setSupervisor(e.target.value === "" ? null : e.target.value)
-          }
-          className="border p-2 rounded-md cursor-pointer"
-        >
-          <option value="">🧑‍💼 No Supervisor</option>
-          {supervisors.map((emp) => (
-            <option key={emp._id} value={emp._id}>
-              {emp.name}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2 border p-2 rounded-md">
+          <FaUserTie />
+          <select
+            value={supervisor || ""}
+            onChange={(e) => setSupervisor(e.target.value || null)}
+            className="w-full outline-none cursor-pointer"
+          >
+            <option value="">No Supervisor</option>
+            {supervisors.map((emp) => (
+              <option key={emp._id} value={emp._id}>
+                {emp.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          value={country}
-          onChange={(e) => handleCountryChange(e.target.value)}
-          className="border p-2 rounded-md cursor-pointer"
-        >
-          <option value="">🌍 Select Country</option>
-          {countries.map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2 border p-2 rounded-md">
+          <FaGlobe />
+          <select
+            value={country}
+            onChange={(e) => handleCountryChange(e.target.value)}
+            className="w-full outline-none cursor-pointer"
+          >
+            <option value="">Select Country</option>
+            {countries.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          value={state}
-          onChange={(e) => handleStateChange(e.target.value)}
-          className="border p-2 rounded-md cursor-pointer"
-          disabled={!states.length}
-        >
-          <option value="">🏳️ Select State</option>
-          {states.map((s) => (
-            <option key={s.name}>{s.name}</option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2 border p-2 rounded-md">
+          <FaFlag />
+          <select
+            value={state}
+            onChange={(e) => handleStateChange(e.target.value)}
+            className="w-full outline-none cursor-pointer"
+            disabled={!states.length}
+          >
+            <option value="">Select State</option>
+            {states.map((s) => (
+              <option key={s.name}>{s.name}</option>
+            ))}
+          </select>
+        </div>
 
-        <select
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          className="border p-2 rounded-md cursor-pointer"
-          disabled={!cities.length}
-        >
-          <option value="">🏙️ Select City</option>
-          {cities.map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2 border p-2 rounded-md">
+          <FaCity />
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="w-full outline-none cursor-pointer"
+            disabled={!cities.length}
+          >
+            <option value="">Select City</option>
+            {cities.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+        </div>
 
         <div className="col-span-1 md:col-span-2 flex justify-end gap-4 mt-6">
           <button
@@ -273,13 +265,13 @@ const EmployeeForm = ({ onClose, onSuccess, editData }) => {
             onClick={onClose}
             className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition duration-200 cursor-pointer"
           >
-            ❌ Cancel
+            Cancel
           </button>
           <button
             type="submit"
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 cursor-pointer"
           >
-            {isEditMode ? "✅ Update" : "🚀 Create"}
+            {isEditMode ? "Update" : "Create"}
           </button>
         </div>
       </form>
