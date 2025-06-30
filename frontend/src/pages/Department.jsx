@@ -3,50 +3,52 @@ import DepartmentForm from "../components/DepartmentForm";
 import DepartmentList from "../components/DepartmentList";
 
 const DepartmentsPage = () => {
-  const [showForm, setShowForm] = useState(false);
+  const [mode, setMode] = useState("list"); // 'list' | 'form'
   const [editData, setEditData] = useState(null);
   const [refresh, setRefresh] = useState(false);
 
-  // Handle create button
   const handleAddClick = () => {
-    setEditData(null); // No edit data for new department
-    setShowForm(true);
-  };
-
-  // Handle edit button from list
-  const handleEditClick = (department) => {
-    setEditData(department);
-    setShowForm(true);
-  };
-
-  // Called after save (create/update)
-  const handleSuccess = () => {
-    setShowForm(false);
     setEditData(null);
-    setRefresh((prev) => !prev); // Trigger list reload
+    setMode("form");
+  };
+
+  const handleEditClick = (data) => {
+    setEditData(data);
+    setMode("form");
+  };
+
+  const handleSuccess = () => {
+    setEditData(null);
+    setMode("list");
+    setRefresh((prev) => !prev);
+  };
+
+  const handleCancel = () => {
+    setEditData(null);
+    setMode("list");
   };
 
   return (
-    <div className="space-y-6">
-      {!showForm && (
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-          onClick={handleAddClick}
-        >
-          + Add Department
-        </button>
-      )}
+    <div className="p-6">
+      {mode === "list" ? (
+        <>
+          <div className="flex justify-between mb-4">
+            <h1 className="text-2xl font-bold text-blue-700">Departments</h1>
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
+              onClick={handleAddClick}
+            >
+              + Add Department
+            </button>
+          </div>
 
-      {showForm ? (
-        <DepartmentForm
-          editData={editData}
-          onClose={() => setShowForm(false)}
-          onSuccess={handleSuccess}
-        />
+          <DepartmentList onEdit={handleEditClick} refresh={refresh} />
+        </>
       ) : (
-        <DepartmentList
-          onEdit={handleEditClick}
-          refresh={refresh}
+        <DepartmentForm
+          onClose={handleCancel}
+          onSuccess={handleSuccess}
+          editData={editData}
         />
       )}
     </div>

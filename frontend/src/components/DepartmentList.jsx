@@ -1,17 +1,20 @@
-// src/components/DepartmentList.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import DepartmentForm from "./DepartmentForm";
+import Modal from "./Modal";
 
 const DepartmentList = () => {
   const [departments, setDepartments] = useState([]);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  // Fetch departments
+  const [confirmId, setConfirmId] = useState(null);
+
   const fetchDepartments = async () => {
     try {
       setLoading(true);
@@ -20,8 +23,8 @@ const DepartmentList = () => {
         { withCredentials: true }
       );
       setDepartments(res.data?.data || []);
-    } catch (err) {
-      setError("Failed to fetch departments.", err);
+    } catch {
+      setError("Failed to fetch departments.");
     } finally {
       setLoading(false);
     }
@@ -31,44 +34,24 @@ const DepartmentList = () => {
     fetchDepartments();
   }, []);
 
-  // Delete department
   const handleDelete = async (id) => {
-    const confirmDelete = confirm("Are you sure you want to delete this department?");
-    if (!confirmDelete) return;
-
     try {
       await axios.delete(
         `${import.meta.env.VITE_SERVER_URL}/api/department/deletedepartment/${id}`,
         { withCredentials: true }
       );
-      fetchDepartments(); // Refresh list
+      toast.success("Department deleted successfully!");
+      fetchDepartments();
     } catch (err) {
-      alert("Error deleting department.", err);
+      console.error(err);
+      toast.error("Failed to delete department.");
+    } finally {
+      setConfirmId(null);
     }
   };
 
-  const handleAdd = () => {
-    setEditData(null);
-    setShowForm(true);
-  };
-
-  const handleEdit = (dept) => {
-    setEditData(dept);
-    setShowForm(true);
-  };
-
   return (
-    <div className="p-6 bg-white shadow-md rounded-xl">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-blue-700">Departments</h2>
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
-          onClick={handleAdd}
-        >
-          + Add Department
-        </button>
-      </div>
-
+    <div className="p-6 bg-white shadow-md rounded-xl relative">
       {loading ? (
         <p className="text-gray-600">Loading...</p>
       ) : error ? (
@@ -89,18 +72,23 @@ const DepartmentList = () => {
               <tr key={dept._id} className="border-t hover:bg-gray-50">
                 <td className="p-2">{dept.name}</td>
                 <td className="p-2">{dept.description || "-"}</td>
-                <td className="p-2 space-x-2">
+                <td className="p-2 space-x-3">
                   <button
-                    className="text-blue-600 hover:underline"
-                    onClick={() => handleEdit(dept)}
+                    className="text-blue-600 hover:text-blue-800 cursor-pointer"
+                    onClick={() => {
+                      setEditData(dept);
+                      setShowForm(true);
+                    }}
+                    title="Edit"
                   >
-                    Edit
+                    <FaEdit />
                   </button>
                   <button
-                    className="text-red-600 hover:underline"
-                    onClick={() => handleDelete(dept._id)}
+                    className="text-red-600 hover:text-red-800 cursor-pointer"
+                    onClick={() => setConfirmId(dept._id)}
+                    title="Delete"
                   >
-                    Delete
+                    <FaTrash />
                   </button>
                 </td>
               </tr>
@@ -109,18 +97,36 @@ const DepartmentList = () => {
         </table>
       )}
 
-      {/* Modal for Create/Edit */}
-      {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-md">
-            <DepartmentForm
-              onClose={() => setShowForm(false)}
-              onSuccess={fetchDepartments}
-              editData={editData}
-            />
+      <Modal isOpen={showForm} onClose={() => setShowForm(false)}>
+        <DepartmentForm
+          onClose={() => setShowForm(false)}
+          onSuccess={fetchDepartments}
+          editData={editData}
+        />
+      </Modal>
+
+      <Modal isOpen={!!confirmId} onClose={() => setConfirmId(null)}>
+        <div className="text-center">
+          <h3 className="text-lg font-semibold mb-4">Confirm Deletion</h3>
+          <p className="mb-6 text-gray-600">
+            Are you sure you want to delete this department?
+          </p>
+          <div className="flex justify-center gap-4">
+            <button
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 cursor-pointer"
+              onClick={() => handleDelete(confirmId)}
+            >
+              Yes, Delete
+            </button>
+            <button
+              className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 cursor-pointer"
+              onClick={() => setConfirmId(null)}
+            >
+              Cancel
+            </button>
           </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };

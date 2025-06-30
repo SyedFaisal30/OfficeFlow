@@ -1,41 +1,56 @@
-// src/pages/EmployeePage.jsx
 import { useState } from "react";
 import EmployeeForm from "../components/EmployeeForm";
 import EmployeeList from "../components/EmployeeList";
 
 const EmployeePage = () => {
-  const [showForm, setShowForm] = useState(false);
+  const [mode, setMode] = useState("list"); // 'list' or 'form'
   const [editData, setEditData] = useState(null);
+  const [refresh, setRefresh] = useState(false);
+
+  const handleAddClick = () => {
+    setEditData(null);
+    setMode("form");
+  };
+
+  const handleEditClick = (data) => {
+    setEditData(data);
+    setMode("form");
+  };
+
+  const handleSuccess = () => {
+    setMode("list");
+    setEditData(null);
+    setRefresh((prev) => !prev);
+  };
+
+  const handleCancel = () => {
+    setMode("list");
+    setEditData(null);
+  };
 
   return (
     <div className="p-6">
-      <div className="flex justify-between mb-4">
-        <h1 className="text-2xl font-bold text-blue-700">Employees</h1>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-          onClick={() => {
-            setEditData(null);
-            setShowForm(true);
-          }}
-        >
-          + Add Employee
-        </button>
-      </div>
+      {mode === "list" ? (
+        <>
+          <div className="flex justify-between mb-4">
+            <h1 className="text-2xl font-bold text-blue-700">Employees</h1>
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
+              onClick={handleAddClick}
+            >
+              + Add Employee
+            </button>
+          </div>
 
-      {showForm && (
+          <EmployeeList onEdit={handleEditClick} refresh={refresh} />
+        </>
+      ) : (
         <EmployeeForm
-          onClose={() => setShowForm(false)}
           editData={editData}
-          onSuccess={() => setShowForm(false)}
+          onSuccess={handleSuccess}
+          onClose={handleCancel}
         />
       )}
-
-      <EmployeeList
-        onEdit={(data) => {
-          setEditData(data);
-          setShowForm(true);
-        }}
-      />
     </div>
   );
 };

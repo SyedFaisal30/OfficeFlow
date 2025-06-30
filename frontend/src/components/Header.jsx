@@ -73,7 +73,7 @@ const Header = () => {
             </Link>
             <button
               onClick={handleLogout}
-              className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 flex items-center gap-1"
+              className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 flex items-center gap-1 cursor-pointer"
             >
               <FaSignOutAlt />
               Logout
@@ -82,7 +82,7 @@ const Header = () => {
         ) : (
           <Link
             to="/login"
-            className="bg-green-500 px-3 py-1 rounded hover:bg-green-600 flex items-center gap-1"
+            className="bg-green-500 px-3 py-1 rounded hover:bg-green-600 flex items-center gap-1 cursor-pointer"
           >
             <FaSignInAlt />
             Login

@@ -1,31 +1,23 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
+import { FaUsers, FaBuilding, FaArrowRight } from "react-icons/fa";
 
 const Dashboard = () => {
   const [stats, setStats] = useState({ departments: 0, employees: 0 });
   const [departments, setDepartments] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [error, setError] = useState("");
   const location = useLocation();
 
   const isRootDashboard = location.pathname === "/dashboard";
 
-  // Convert pathname to breadcrumb parts
   const generateBreadcrumbs = () => {
-    const pathnames = location.pathname.split("/").filter(Boolean); // e.g. ['dashboard', 'employees', 'edit']
-    const links = [];
-
-    for (let i = 0; i < pathnames.length; i++) {
-      const path = "/" + pathnames.slice(0, i + 1).join("/");
-      const name = pathnames[i]
-        .replace(/-/g, " ")
-        .replace(/\b\w/g, (char) => char.toUpperCase());
-
-      links.push({ path, name });
-    }
-
-    return links;
+    const pathnames = location.pathname.split("/").filter(Boolean);
+    return pathnames.map((part, index) => ({
+      path: "/" + pathnames.slice(0, index + 1).join("/"),
+      name: part.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase()),
+    }));
   };
 
   const breadcrumbs = generateBreadcrumbs();
@@ -53,7 +45,7 @@ const Dashboard = () => {
         setDepartments(deptData.slice(0, 3));
         setEmployees(empData.slice(0, 3));
       } catch (err) {
-        setError("Failed to fetch dashboard stats. Please login again.");
+        toast.error("Failed to fetch dashboard stats. Please login again.");
         console.error(err);
       }
     };
@@ -64,47 +56,56 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-blue-50 py-10 px-6 space-y-10">
       <h1 className="text-3xl font-bold text-blue-800">Admin Dashboard</h1>
-
-      {/* Breadcrumbs */}
       {!isRootDashboard && (
         <nav className="text-sm text-gray-600 mb-4">
           <ul className="flex flex-wrap items-center space-x-2">
             {breadcrumbs.map((crumb, idx) => (
               <li key={crumb.path} className="flex items-center">
-                <Link to={crumb.path} className="text-blue-600 hover:underline capitalize">
+                <Link
+                  to={crumb.path}
+                  className="text-blue-600 hover:underline capitalize cursor-pointer"
+                >
                   {crumb.name}
                 </Link>
-                {idx < breadcrumbs.length - 1 && <span className="mx-2">›</span>}
+                {idx < breadcrumbs.length - 1 && (
+                  <span className="mx-2 text-gray-400">›</span>
+                )}
               </li>
             ))}
           </ul>
         </nav>
       )}
 
-      {error && <p className="text-red-600">{error}</p>}
-
       {isRootDashboard && (
         <>
-          {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="bg-white shadow-lg rounded-xl p-6 text-center">
-              <h2 className="text-xl font-semibold text-gray-700">Total Departments</h2>
+            <div className="bg-white shadow-lg rounded-xl p-6 text-center hover:shadow-xl transition cursor-default">
+              <h2 className="text-xl font-semibold text-gray-700 flex justify-center items-center gap-2">
+                <FaBuilding /> Total Departments
+              </h2>
               <p className="text-4xl font-bold text-blue-600">{stats.departments}</p>
             </div>
 
-            <div className="bg-white shadow-lg rounded-xl p-6 text-center">
-              <h2 className="text-xl font-semibold text-gray-700">Total Employees</h2>
-              <p className="text-4xl font-bold text-blue-600">{stats.employees}</p>
+            <div className="bg-white shadow-lg rounded-xl p-6 text-center hover:shadow-xl transition cursor-default">
+              <h2 className="text-xl font-semibold text-gray-700 flex justify-center items-center gap-2">
+                <FaUsers /> Total Employees
+              </h2>
+              <p className="text-4xl font-bold text-green-600">{stats.employees}</p>
             </div>
           </div>
 
-          {/* Departments + Employees Side by Side */}
+          {/* Departments + Employees */}
           <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Recent Departments */}
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-semibold text-blue-700">Recent Departments</h2>
-                <Link to="departments" className="text-blue-600 font-medium hover:underline">View All</Link>
+                <Link
+                  to="departments"
+                  className="text-blue-600 font-medium hover:underline cursor-pointer"
+                >
+                  View All
+                </Link>
               </div>
 
               {departments.length === 0 ? (
@@ -125,17 +126,22 @@ const Dashboard = () => {
 
               <Link
                 to="departments"
-                className="mt-3 inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold shadow"
+                className="mt-3 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold shadow transition cursor-pointer"
               >
-                Add / Manage Departments
+                <FaArrowRight />
+                Manage Departments
               </Link>
             </div>
 
-            {/* Recent Employees */}
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-semibold text-green-700">Recent Employees</h2>
-                <Link to="employees" className="text-green-600 font-medium hover:underline">View All</Link>
+                <Link
+                  to="employees"
+                  className="text-green-600 font-medium hover:underline cursor-pointer"
+                >
+                  View All
+                </Link>
               </div>
 
               {employees.length === 0 ? (
@@ -158,16 +164,16 @@ const Dashboard = () => {
 
               <Link
                 to="employees"
-                className="mt-3 inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold shadow"
+                className="mt-3 inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold shadow transition cursor-pointer"
               >
-                Add / Manage Employees
+                <FaArrowRight />
+                Manage Employees
               </Link>
             </div>
           </div>
         </>
       )}
 
-      {/* Nested Route Outlet */}
       <Outlet />
     </div>
   );

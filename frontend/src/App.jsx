@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Landing from "./pages/Landing";
@@ -21,7 +22,6 @@ function App() {
           {},
           { withCredentials: true }
         );
-        // Token is valid or refreshed successfully
         localStorage.setItem("isLoggedIn", "true");
       } catch (err) {
         console.error("❌ Token refresh failed:", err.message);
@@ -35,6 +35,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <ToastContainer position="top-center"/>
       <Header />
       <main className="flex-grow">
         <Routes>
