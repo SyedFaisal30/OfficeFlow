@@ -34,8 +34,17 @@ function App() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <ToastContainer position="top-center"/>
+    <div className="flex flex-col">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />{" "}
       <Header />
       <main className="flex-grow">
         <Routes>

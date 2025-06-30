@@ -34,7 +34,7 @@ const Landing = () => {
             <FaUsersCog className="text-blue-400" /> Admin Access Required for Features
           </p>
         </div>
-      </div>i
+      </div>
     </section>
   );
 };

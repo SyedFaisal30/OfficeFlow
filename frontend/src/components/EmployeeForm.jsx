@@ -10,6 +10,7 @@ import {
   FaGlobe,
   FaFlag,
   FaCity,
+  FaEdit
 } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 

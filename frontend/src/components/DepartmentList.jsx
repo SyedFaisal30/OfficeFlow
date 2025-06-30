@@ -49,10 +49,7 @@ const DepartmentList = () => {
   };
 
   return (
-    <div className="py-4 px-2 sm:p-1 bg-white shadow-md rounded-xl w-[100%] ">
-      <h2 className="text-xl sm:text-2xl font-bold text-blue-700 mb-4">
-        Department List
-      </h2>
+    <div className="sm:p-4 p-2 bg-white shadow-md rounded-xl w-[100%] ">
 
       {loading ? (
         <p className="text-gray-600">Loading...</p>
@@ -62,7 +59,7 @@ const DepartmentList = () => {
         <p className="text-gray-600">No departments found.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-[95%] justify-center mx-auto border rounded-lg text-sm sm:text-base">
+          <table className="w-[100%] py-4 justify-center mx-auto border rounded-lg text-sm sm:text-base">
             <thead>
               <tr className="bg-blue-100 text-left">
                 <th className="p-3 whitespace-nowrap">Name</th>
@@ -77,7 +74,7 @@ const DepartmentList = () => {
                   <td className="p-3">{dept.description || "-"}</td>
                   <td className="p-3 flex flex-wrap gap-2">
                     <button
-                      className="text-blue-600 hover:text-blue-800"
+                      className="text-blue-600 hover:text-blue-800 cursor-pointer"
                       onClick={() => {
                         setEditData(dept);
                         setShowForm(true);
@@ -87,7 +84,7 @@ const DepartmentList = () => {
                       <FaEdit />
                     </button>
                     <button
-                      className="text-red-600 hover:text-red-800"
+                      className="text-red-600 hover:text-red-800 cursor-pointer"
                       onClick={() => setConfirmId(dept._id)}
                       title="Delete"
                     >
@@ -117,13 +114,13 @@ const DepartmentList = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button
-              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 cursor-pointer"
               onClick={() => handleDelete(confirmId)}
             >
               Yes, Delete
             </button>
             <button
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+              className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 cursor-pointer"
               onClick={() => setConfirmId(null)}
             >
               Cancel

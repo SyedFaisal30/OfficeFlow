@@ -70,7 +70,7 @@ const EmployeeList = ({ onEdit, refresh }) => {
   }, [fetchEmployees, refresh]);
 
   return (
-    <div className="py-4 px-2 bg-white shadow rounded-xl w-full mx-auto">
+    <div className="sm:p-4 p-2 bg-white shadow rounded-xl w-full mx-auto">
       <div className="flex flex-wrap gap-4 mb-4">
         <input
           placeholder="Search by name/email"
@@ -135,14 +135,14 @@ const EmployeeList = ({ onEdit, refresh }) => {
                   <td className="p-2 flex items-center gap-3">
                     <button
                       onClick={() => onEdit(emp)}
-                      className="text-blue-600 hover:text-blue-800"
+                      className="text-blue-600 hover:text-blue-800 cursor-pointer"
                       title="Edit"
                     >
                       <FaEdit className="text-lg" />
                     </button>
                     <button
                       onClick={() => setConfirmDeleteId(emp._id)}
-                      className="text-red-600 hover:text-red-800"
+                      className="text-red-600 hover:text-red-800 cursor-pointer"
                       title="Delete"
                     >
                       <FaTrash className="text-lg" />
