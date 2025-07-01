@@ -28,7 +28,7 @@ OfficeFlow is a full-stack Office Management System built using **Node.js**, **E
 
 Use the following credentials to log in:
 
-Email: faisal@gmail.com
+Email: faisal30@gmail.com
 Password: faisal23
 
 
