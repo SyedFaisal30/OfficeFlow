@@ -9,6 +9,13 @@ import {
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "None",
+  path: "/",
+};
+
 export const adminLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -19,7 +26,6 @@ export const adminLogin = asyncHandler(async (req, res) => {
   }
 
   const admin = await Admin.findOne({ email });
-
   if (!admin) {
     return res.status(404).json(new ApiError(404, false, "Admin not found"));
   }
@@ -28,21 +34,18 @@ export const adminLogin = asyncHandler(async (req, res) => {
   if (!isPasswordValid) {
     return res.status(401).json(new ApiError(401, false, "Invalid password"));
   }
+
   const accessToken = generateAccessToken(admin._id);
   const refreshToken = generateRefreshToken(admin._id);
 
   res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
+    ...cookieOptions,
     maxAge: 15 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    maxAge: 1 * 24 * 60 * 60 * 1000,
+    ...cookieOptions,
+    maxAge: 24 * 60 * 60 * 1000,
   });
 
   return res
@@ -67,14 +70,11 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
 
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-
     const adminId = decoded.adminId;
     const newAccessToken = generateAccessToken(adminId);
 
     res.cookie("accessToken", newAccessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      ...cookieOptions,
       maxAge: 15 * 60 * 1000,
     });
 
@@ -88,9 +88,22 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.error("JWT Verify Error:", error.message);
     return res
       .status(403)
       .json(new ApiError(403, false, "Invalid or expired refresh token"));
   }
+});
+
+export const adminLogout = asyncHandler(async (req, res) => {
+  res.clearCookie("accessToken", {
+    ...cookieOptions,
+  });
+
+  res.clearCookie("refreshToken", {
+    ...cookieOptions,
+  });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Admin logged out successfully"));
 });
