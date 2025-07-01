@@ -8,7 +8,7 @@ import Modal from "./Modal";
 const DepartmentList = () => {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editData, setEditData] = useState(null);
   const [confirmId, setConfirmId] = useState(null);
@@ -52,12 +52,14 @@ const DepartmentList = () => {
     <div className="sm:p-4 p-2 bg-white shadow-md rounded-xl w-[100%] ">
 
       {loading ? (
-        <p className="text-gray-600">Loading...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
+        <div className="text-center py-10">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-2" />
+          <p className="text-gray-600">Loading departments...</p>
+        </div>
       ) : departments.length === 0 ? (
-        <p className="text-gray-600">No departments found.</p>
+        <p className="text-center text-gray-500">No departments found.</p>
       ) : (
+
         <div className="overflow-x-auto">
           <table className="w-[100%] py-4 justify-center mx-auto border rounded-lg text-sm sm:text-base">
             <thead>
