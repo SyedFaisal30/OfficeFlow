@@ -1,13 +1,8 @@
-<table width="100%">
-  <tr>
-    <td align="left" width="120">
-      <img src="frontend/src/assets/logo.png" alt="OfficeFlow Logo" width="100">
-    </td>
-    <td>
-      <h1 style="font-size: 2rem; margin-left: 10px;">OfficeFlow – Office Management System</h1>
-    </td>
-  </tr>
-</table>
+<p align="left" style="display: flex; align-items: center; gap: 20px;">
+  <img src="frontend/src/assets/logo.png" alt="OfficeFlow Logo" width="120" />
+  <span style="font-size: 2.2rem; font-weight: bold;">OfficeFlow – Office Management System</span>
+</p>
+
 
 OfficeFlow is a full-stack Office Management System built using **Node.js**, **Express**, and **MongoDB**, with a **React + Tailwind CSS** frontend. It enables CRUD operations for **Departments** and **Employees**, supports **pagination**, **search**, and **filtering**, integrates a **Country/State/City API**, and features **JWT-based Admin Login**.
 
