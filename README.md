@@ -1,7 +1,8 @@
-<p align="left" style="display: flex; align-items: center; gap: 20px;">
-  <img src="frontend/src/assets/logo.png" alt="OfficeFlow Logo" width="80" />
-  <span style="font-size: 3.5rem; font-weight: bold;">OfficeFlow – Office Management System</span>
-</p>
+<h1 align="center">
+  <img src="frontend/src/assets/logo.png" alt="CricAIlytics Logo" width="50" style="border-radius: 50%; vertical-align: middle; margin-right: 12px;" />
+  <span>OfficeFlow – Office Management System</span>
+</h1>
+
 
 
 OfficeFlow is a full-stack Office Management System built using **Node.js**, **Express**, and **MongoDB**, with a **React + Tailwind CSS** frontend. It enables CRUD operations for **Departments** and **Employees**, supports **pagination**, **search**, and **filtering**, integrates a **Country/State/City API**, and features **JWT-based Admin Login**.
