@@ -34,14 +34,14 @@ export const adminLogin = asyncHandler(async (req, res) => {
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "None",
     maxAge: 15 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "None",
     maxAge: 1 * 24 * 60 * 60 * 1000,
   });
 
@@ -59,9 +59,6 @@ export const adminLogin = asyncHandler(async (req, res) => {
 export const refreshAccessToken = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
 
-  console.log("🍪 Refresh Token:", refreshToken);
-  console.log("🔑 Refresh Token Secret:", process.env.REFRESH_TOKEN_SECRET);
-
   if (!refreshToken) {
     return res
       .status(401)
@@ -78,7 +75,7 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      maxAge: 15 * 60 * 1000, // 15 mins
+      maxAge: 15 * 60 * 1000,
     });
 
     return res
@@ -91,7 +88,7 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.error("❌ JWT Verify Error:", error.message); // Add this line!
+    console.error("JWT Verify Error:", error.message);
     return res
       .status(403)
       .json(new ApiError(403, false, "Invalid or expired refresh token"));
