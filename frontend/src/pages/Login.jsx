@@ -2,16 +2,21 @@ import { useState } from "react";
 import axios from "axios";
 import { FaLock, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setErrorMsg("");
 
     try {
       const res = await axios.post(
@@ -23,12 +28,15 @@ const Login = () => {
       if (res?.data?.status === 200) {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("login-event", Date.now());
-        navigate("/dashboard");
+        toast.success("Login successful!", { autoClose: 2000 });
+        setTimeout(() => navigate("/dashboard"), 2000);
       }
     } catch (error) {
       setErrorMsg(
         error?.response?.data?.message || "Login failed. Please try again."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -80,9 +88,37 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition cursor-pointer"
+            disabled={loading}
+            className={`w-full flex items-center justify-center gap-2 ${
+              loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+            } text-white py-2 rounded-md transition`}
           >
-            Log In
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Logging in...
+              </>
+            ) : (
+              "Log In"
+            )}
           </button>
         </form>
       </div>

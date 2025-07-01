@@ -8,6 +8,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState({ departments: 0, employees: 0 });
   const [departments, setDepartments] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
 
   const isRootDashboard = location.pathname === "/dashboard";
@@ -28,20 +29,12 @@ const Dashboard = () => {
     const fetchStatsAndLists = async () => {
       try {
         const [deptRes, empRes] = await Promise.all([
-          axios.get(
-            `${
-              import.meta.env.VITE_SERVER_URL
-            }/api/department/getalldepartments`,
-            {
-              withCredentials: true,
-            }
-          ),
-          axios.get(
-            `${import.meta.env.VITE_SERVER_URL}/api/employee/getallemployees`,
-            {
-              withCredentials: true,
-            }
-          ),
+          axios.get(`${import.meta.env.VITE_SERVER_URL}/api/department/getalldepartments`, {
+            withCredentials: true,
+          }),
+          axios.get(`${import.meta.env.VITE_SERVER_URL}/api/employee/getallemployees`, {
+            withCredentials: true,
+          }),
         ]);
 
         const deptData = deptRes.data?.data || [];
@@ -57,6 +50,8 @@ const Dashboard = () => {
       } catch (err) {
         toast.error("Failed to fetch dashboard stats. Please login again.");
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -87,114 +82,124 @@ const Dashboard = () => {
         </nav>
       )}
 
-      {isRootDashboard && (
-        <>
-          <div className="w-full grid grid-cols-2 sm:grid-cols-2 sm:gap-6 gap-2">
-            <div className="bg-white shadow-lg flex flex-col sm:flex-row justify-between items-center rounded-xl p-6 text-center hover:shadow-xl transition">
-              <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2 sm:mb-0">
-                <FaBuilding /> Total Departments
-              </h2>
-              <p className="text-4xl font-bold text-blue-600">
-                {stats.departments}
-              </p>
-            </div>
-
-            <div className="bg-white shadow-lg flex flex-col sm:flex-row justify-between items-center rounded-xl p-6 text-center hover:shadow-xl transition">
-              <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2 mb-2 sm:mb-0">
-                <FaUsers /> Total Employees
-              </h2>
-              <p className="text-4xl font-bold text-blue-600">
-                {stats.employees}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-semibold text-blue-700">
-                  Recent Departments
+      {loading ? (
+        <div className="flex justify-center items-center py-24">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : (
+        isRootDashboard && (
+          <>
+            {/* Stats */}
+            <div className="w-full grid grid-cols-2 sm:grid-cols-2 sm:gap-6 gap-2">
+              <div className="bg-white shadow-lg flex flex-col sm:flex-row justify-between items-center rounded-xl p-6 text-center hover:shadow-xl transition">
+                <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2 sm:mb-0">
+                  <FaBuilding /> Total Departments
                 </h2>
+                <p className="text-4xl font-bold text-blue-600">
+                  {stats.departments}
+                </p>
+              </div>
+
+              <div className="bg-white shadow-lg flex flex-col sm:flex-row justify-between items-center rounded-xl p-6 text-center hover:shadow-xl transition">
+                <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2 mb-2 sm:mb-0">
+                  <FaUsers /> Total Employees
+                </h2>
+                <p className="text-4xl font-bold text-blue-600">
+                  {stats.employees}
+                </p>
+              </div>
+            </div>
+
+            {/* Department & Employee Previews */}
+            <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Departments */}
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-semibold text-blue-700">
+                    Recent Departments
+                  </h2>
+                  <Link
+                    to="departments"
+                    className="text-blue-600 font-medium hover:underline"
+                  >
+                    View All
+                  </Link>
+                </div>
+
+                {departments.length === 0 ? (
+                  <p className="text-gray-500 italic">No departments found.</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {departments.map((dept) => (
+                      <li
+                        key={dept._id}
+                        className="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500"
+                      >
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {dept.name}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {dept.description}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
                 <Link
                   to="departments"
-                  className="text-blue-600 font-medium hover:underline"
+                  className="mt-3 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold shadow transition"
                 >
-                  View All
+                  <FaArrowRight />
+                  Manage Departments
                 </Link>
               </div>
 
-              {departments.length === 0 ? (
-                <p className="text-gray-500 italic">No departments found.</p>
-              ) : (
-                <ul className="space-y-3">
-                  {departments.map((dept) => (
-                    <li
-                      key={dept._id}
-                      className="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500"
-                    >
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        {dept.name}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {dept.description}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              {/* Employees */}
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-semibold text-blue-700">
+                    Recent Employees
+                  </h2>
+                  <Link
+                    to="employees"
+                    className="text-blue-600 font-medium hover:underline"
+                  >
+                    View All
+                  </Link>
+                </div>
 
-              <Link
-                to="departments"
-                className="mt-3 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold shadow transition"
-              >
-                <FaArrowRight />
-                Manage Departments
-              </Link>
-            </div>
+                {employees.length === 0 ? (
+                  <p className="text-gray-500 italic">No employees found.</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {employees.map((emp) => (
+                      <li
+                        key={emp._id}
+                        className="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500"
+                      >
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {emp.name}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {emp.jobTitle} – {emp.department?.name || "No Dept"}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-semibold text-blue-700">
-                  Recent Employees
-                </h2>
                 <Link
                   to="employees"
-                  className="text-blue-600 font-medium hover:underline"
+                  className="mt-3 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold shadow transition"
                 >
-                  View All
+                  <FaArrowRight />
+                  Manage Employees
                 </Link>
               </div>
-
-              {employees.length === 0 ? (
-                <p className="text-gray-500 italic">No employees found.</p>
-              ) : (
-                <ul className="space-y-3">
-                  {employees.map((emp) => (
-                    <li
-                      key={emp._id}
-                      className="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500"
-                    >
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        {emp.name}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {emp.jobTitle} – {emp.department?.name || "No Dept"}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <Link
-                to="employees"
-                className="mt-3 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold shadow transition"
-              >
-                <FaArrowRight />
-                Manage Employees
-              </Link>
             </div>
-          </div>
-        </>
+          </>
+        )
       )}
 
       <Outlet />

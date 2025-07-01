@@ -6,15 +6,24 @@ const DepartmentsPage = () => {
   const [mode, setMode] = useState("list"); // 'list' | 'form'
   const [editData, setEditData] = useState(null);
   const [refresh, setRefresh] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleAddClick = () => {
-    setEditData(null);
-    setMode("form");
+    setLoading(true);
+    setTimeout(() => {
+      setEditData(null);
+      setMode("form");
+      setLoading(false);
+    }, 300); // simulate small delay for UX
   };
 
   const handleEditClick = (data) => {
-    setEditData(data);
-    setMode("form");
+    setLoading(true);
+    setTimeout(() => {
+      setEditData(data);
+      setMode("form");
+      setLoading(false);
+    }, 300);
   };
 
   const handleSuccess = () => {
@@ -29,7 +38,7 @@ const DepartmentsPage = () => {
   };
 
   return (
-    <div className="py-6">
+    <div className="py-6 animate-fade-in transition-opacity duration-300 ease-in-out">
       {mode === "list" ? (
         <>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
@@ -44,12 +53,18 @@ const DepartmentsPage = () => {
 
           <DepartmentList onEdit={handleEditClick} refresh={refresh} />
         </>
+      ) : loading ? (
+        <div className="flex justify-center items-center py-24">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
       ) : (
-        <DepartmentForm
-          onClose={handleCancel}
-          onSuccess={handleSuccess}
-          editData={editData}
-        />
+        <div className="transition-all duration-500 ease-in-out">
+          <DepartmentForm
+            onClose={handleCancel}
+            onSuccess={handleSuccess}
+            editData={editData}
+          />
+        </div>
       )}
     </div>
   );
