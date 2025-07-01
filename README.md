@@ -1,6 +1,6 @@
 <p align="left" style="display: flex; align-items: center; gap: 20px;">
-  <img src="frontend/src/assets/logo.png" alt="OfficeFlow Logo" width="120" />
-  <span style="font-size: 3.2rem; font-weight: bold;">OfficeFlow – Office Management System</span>
+  <img src="frontend/src/assets/logo.png" alt="OfficeFlow Logo" width="80" />
+  <span style="font-size: 3.5rem; font-weight: bold;">OfficeFlow – Office Management System</span>
 </p>
 
 
